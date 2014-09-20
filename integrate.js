@@ -22,6 +22,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*
+ * TODO: Love song action.
+ */
+ 
 "use strict";
 
 (function(Nuvola)
@@ -62,16 +66,47 @@ WebApp._onPageReady = function()
 // Extract data from the web page
 WebApp.update = function()
 {
-    var track = {
-        title: null,
-        artist: null,
-        album: null,
-        artLocation: null
+    if (!window.playercontrol)
+        return;
+    
+    var track = { album: null }
+    try
+    {
+        track.title = window.playercontrol.$labelSongTitle.text() || null;
     }
-
+    catch (e)
+    {
+        track.title = null;
+        Nuvola.log("{1}", e);
+    }
+    var elm;
+    elm = document.getElementById("naboo_menu_infos_cover");
+    track.artLocation = elm ? elm.src : null;
+    elm = document.getElementById("player_track_artist_container");
+    track.artist = elm ? elm.innerText || null : null;
     player.setTrack(track);
-    player.setPlaybackState(PlaybackState.UNKNOWN);
-
+    
+    try
+    {
+        var playButton  = window.playercontrol.$btnPlay.is(':visible');
+        var pauseButton = window.playercontrol.$btnPause.is(':visible');
+        var state = playButton ? PlaybackState.PAUSED : (pauseButton ? PlaybackState.PLAYING: PlaybackState.UNKNOWN);
+    }
+    catch (e)
+    {
+        var playButton = false;
+        var pauseButton = false;
+        var state = PlaybackState.UNKNOWN;
+        Nuvola.log("{1}", e);
+    }
+    
+    player.setPlaybackState(state);    
+    
+    player.setCanGoPrev(window.playercontrol.prevButtonActive());
+    player.setCanGoNext(window.playercontrol.nextButtonActive());
+    player.setCanPlay(playButton);
+    player.setCanPause(pauseButton);
+    
     // Schedule the next update
     setTimeout(this.update.bind(this), 500);
 }
@@ -79,6 +114,28 @@ WebApp.update = function()
 // Handler of playback actions
 WebApp._onActionActivated = function(emitter, name, param)
 {
+    switch (name)
+    {
+    case PlayerAction.TOGGLE_PLAY:
+        if (window.playercontrol.$btnPause.is(':visible'))
+            window.playercontrol.$btnPause.click();
+        else if (window.playercontrol.$btnPlay.is(':visible'))
+            window.playercontrol.$btnPlay.click();
+        break;
+    case PlayerAction.PLAY:
+        window.playercontrol.$btnPlay.click();
+        break;
+    case PlayerAction.PAUSE:
+    case PlayerAction.STOP:
+        window.playercontrol.$btnPause.click();
+        break;
+    case PlayerAction.PREV_SONG:
+        window.playercontrol.$btnPrevious.click();
+        break;
+    case PlayerAction.NEXT_SONG:
+        window.playercontrol.$btnNext.click();
+        break;
+    }
 }
 
 WebApp.start();
