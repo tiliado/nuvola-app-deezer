@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Jiří Janoušek <janousek.jiri@gmail.com>
+ * Copyright 2014-2015 Jiří Janoušek <janousek.jiri@gmail.com>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: 
@@ -66,49 +66,49 @@ WebApp._onPageReady = function()
 // Extract data from the web page
 WebApp.update = function()
 {
-    if (!window.playercontrol)
-        return;
-    
     var track = { album: null }
-    try
-    {
-        track.title = window.playercontrol.$labelSongTitle.text() || null;
-    }
-    catch (e)
-    {
-        track.title = null;
-        Nuvola.log("{1}", e);
-    }
     var elm;
-    elm = document.getElementById("naboo_menu_infos_cover");
-    track.artLocation = elm ? elm.src : null;
-    elm = document.getElementById("player_track_artist_container");
+    elm = document.querySelector(".player .player-track .player-track-title");
+    track.title = elm ? elm.innerText || null : null;
+    elm = document.querySelector(".player .player-track-artist .player-track-link");
     track.artist = elm ? elm.innerText || null : null;
+    elm = document.querySelector(".player .player-cover img");
+    track.artLocation = elm ? elm.src || null : null;
     player.setTrack(track);
-    
-    try
-    {
-        var playButton  = window.playercontrol.$btnPlay.is(':visible');
-        var pauseButton = window.playercontrol.$btnPause.is(':visible');
-        var state = playButton ? PlaybackState.PAUSED : (pauseButton ? PlaybackState.PLAYING: PlaybackState.UNKNOWN);
-    }
-    catch (e)
-    {
-        var playButton = false;
-        var pauseButton = false;
-        var state = PlaybackState.UNKNOWN;
-        Nuvola.log("{1}", e);
-    }
-    
+   
+    var playButton  = this._isButtonEnabled("play");
+    var pauseButton = !playButton && this._isButtonEnabled("pause");
+    var state = playButton ? PlaybackState.PAUSED : (pauseButton ? PlaybackState.PLAYING: PlaybackState.UNKNOWN);
     player.setPlaybackState(state);    
-    
-    player.setCanGoPrev(window.playercontrol.prevButtonActive());
-    player.setCanGoNext(window.playercontrol.nextButtonActive());
     player.setCanPlay(playButton);
     player.setCanPause(pauseButton);
+    player.setCanGoPrev(this._isButtonEnabled("prev"));
+    player.setCanGoNext(this._isButtonEnabled("next"));
     
     // Schedule the next update
     setTimeout(this.update.bind(this), 500);
+}
+
+WebApp._isButtonEnabled = function(name)
+{
+    var button = this._getButton(name);
+    return button && !button.disabled;
+}
+
+WebApp._clickButton = function(name)
+{
+    var button = this._getButton(name);
+    if (button && !button.disabled)
+    {
+        Nuvola.clickOnElement(button);
+        return true;
+    }
+    return false;
+}
+
+WebApp._getButton = function(name)
+{
+    return document.querySelector(".player button.control.control-" + name);
 }
 
 // Handler of playback actions
@@ -117,23 +117,21 @@ WebApp._onActionActivated = function(emitter, name, param)
     switch (name)
     {
     case PlayerAction.TOGGLE_PLAY:
-        if (window.playercontrol.$btnPause.is(':visible'))
-            window.playercontrol.$btnPause.click();
-        else if (window.playercontrol.$btnPlay.is(':visible'))
-            window.playercontrol.$btnPlay.click();
+        if (!this._clickButton("play"))
+            this._clickButton("pause");
         break;
     case PlayerAction.PLAY:
-        window.playercontrol.$btnPlay.click();
+        this._clickButton("play");
         break;
     case PlayerAction.PAUSE:
     case PlayerAction.STOP:
-        window.playercontrol.$btnPause.click();
+        this._clickButton("pause");
         break;
     case PlayerAction.PREV_SONG:
-        window.playercontrol.$btnPrevious.click();
+        this._clickButton("prev");
         break;
     case PlayerAction.NEXT_SONG:
-        window.playercontrol.$btnNext.click();
+        this._clickButton("next");
         break;
     }
 }
