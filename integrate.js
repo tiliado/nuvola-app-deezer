@@ -74,7 +74,13 @@ WebApp.update = function()
     track.artist = elm ? elm.innerText || null : null;
     elm = document.querySelector(".player .player-cover img");
     track.artLocation = elm ? elm.src || null : null;
-    player.setTrack(track);
+    
+    /*
+     * No idea where #document comes from.
+     * https://github.com/tiliado/nuvola-app-deezer/issues/2
+     */
+    if (track.title != "#document" && track.artist != "#document")
+        player.setTrack(track);
    
     var playButton  = this._isButtonEnabled("play");
     var pauseButton = !playButton && this._isButtonEnabled("pause");
