@@ -5,6 +5,7 @@ Changelog
 ----------------
 
   * Fixed detection of playback state and play/pause button
+  * Ported to use Nuvola SDK.
 
 2.4 - May 22nd, 2016
 --------------------

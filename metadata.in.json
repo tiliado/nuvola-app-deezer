@@ -1,0 +1,21 @@
+{
+    "id": "deezer", 
+    "name": "Deezer", 
+    "home_url": "http://www.deezer.com", 
+    "allowed_uri": "https?://[A-Za-z0-9_-]*\\.deezer.com/", 
+    "maintainer_name": "Jiří Janoušek", 
+    "maintainer_link": "https://github.com/fenryxo", 
+    "version_major": 2, 
+    "version_minor": 4, 
+    "api_major": 3, 
+    "api_minor": 0, 
+    "categories": "AudioVideo;Audio;", 
+    "license": "2-Clause BSD-license", 
+    "build": {
+        "icons": [
+            "icons/icon.svg SCALABLE 64 128 256", 
+            "icons/icon-xs.svg 16 22 24", 
+            "icons/icon-sm.svg 32 48"
+        ]
+    }
+}
