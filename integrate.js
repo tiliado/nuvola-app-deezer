@@ -114,6 +114,11 @@ WebApp._clickButton = function(name)
 
 WebApp._getButton = function(name)
 {
+    if (name == "play" || name == "pause")
+    {
+		var button = document.querySelector(".player button.control.control-play");
+		return (button && button.querySelector("svg.svg-icon-" + name)) ? button : null;
+	}
     return document.querySelector(".player button.control.control-" + name);
 }
 

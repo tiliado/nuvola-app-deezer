@@ -1,6 +1,11 @@
 Changelog
 =========
 
+2.5 - unreleased
+----------------
+
+  * Fixed detection of playback state and play/pause button
+
 2.4 - May 22nd, 2016
 --------------------
 
