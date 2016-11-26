@@ -1,8 +1,8 @@
 Changelog
 =========
 
-2.5 - unreleased
-----------------
+2.5 - November 26th, 2016
+-------------------------
 
   * Fixed detection of playback state and play/pause button
   * Ported to use Nuvola SDK.
