@@ -31,6 +31,15 @@
 (function(Nuvola)
 {
 
+var CHANGE_VOLUME_STYLE = Nuvola.makeElement("style", {},
+"   .page-sidebar .player-controls > .controls.controls-options .volume {margin: 0;}"
++ " .page-sidebar .player-controls > .controls.controls-options .volume ~ li {display: none !important;}"
++ " .page-sidebar .player-controls > .controls.controls-options .volume > .control-volume > .is-volume-default {display: none !important;}"
++ " .page-sidebar .player-controls > .controls.controls-options .volume > .control-volume > .is-volume-min {display: inline-block;}"
++ " .page-sidebar .player-controls > .controls.controls-options .volume > .control-volume-max,"
++ " .page-sidebar .player-controls > .controls.controls-options .volume > .volume-progress {display: inline-block;}"
+);
+
 // Create media player component
 var player = Nuvola.$object(Nuvola.MediaPlayer);
 
@@ -77,6 +86,8 @@ WebApp.update = function()
     track.length = this._getTrackLength();
     elm = document.querySelector(".player .player-progress .progress-time");
     var elapsed = elm ? elm.innerText || null : null;
+    var volumeHandler = document.querySelector(".player .volume .volume-progress .volume-handler");
+    var volume = volumeHandler ? volumeHandler.getAttribute("aria-valuenow") / 100 : 1.0;
     
     /*
      * No idea where #document comes from.
@@ -94,11 +105,13 @@ WebApp.update = function()
     player.setCanGoPrev(this._isButtonEnabled("prev"));
     player.setCanGoNext(this._isButtonEnabled("next"));
     
-    if (Nuvola.checkVersion && Nuvola.checkVersion(4, 4, 17))
+    if (Nuvola.checkVersion && Nuvola.checkVersion(4, 4, 18))
     {
         if (state !== PlaybackState.UNKNOWN)
             player.setTrackPosition(elapsed);
         player.setCanSeek(state !== PlaybackState.UNKNOWN);
+        player.setCanChangeVolume(!!volumeHandler);
+        player.updateVolume(volume);
     }
     
     // Schedule the next update
@@ -165,6 +178,14 @@ WebApp._onActionActivated = function(emitter, name, param)
         var total = this._getTrackLength();
         if (bar && total >= param)
             Nuvola.clickOnElement(bar, param / total, 0.5);
+        break;
+    case PlayerAction.CHANGE_VOLUME:
+        var head = document.getElementsByTagName("head")[0];
+        head.appendChild(CHANGE_VOLUME_STYLE);
+        var bar = document.querySelector(".player .volume .volume-progress .volume-progress-bar");
+        if (bar)
+            Nuvola.clickOnElement(bar, param, 0.5);
+        head.removeChild(CHANGE_VOLUME_STYLE); 
         break;
     }
 }
