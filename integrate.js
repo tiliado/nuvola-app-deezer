@@ -74,6 +74,9 @@ WebApp.update = function()
     track.artist = elm ? elm.innerText || null : null;
     elm = document.querySelector(".player .player-cover img");
     track.artLocation = elm ? elm.src || null : null;
+    track.length = this._getTrackLength();
+    elm = document.querySelector(".player .player-progress .progress-time");
+    var elapsed = elm ? elm.innerText || null : null;
     
     /*
      * No idea where #document comes from.
@@ -91,8 +94,21 @@ WebApp.update = function()
     player.setCanGoPrev(this._isButtonEnabled("prev"));
     player.setCanGoNext(this._isButtonEnabled("next"));
     
+    if (Nuvola.checkVersion && Nuvola.checkVersion(4, 4, 17))
+    {
+        if (state !== PlaybackState.UNKNOWN)
+            player.setTrackPosition(elapsed);
+        player.setCanSeek(state !== PlaybackState.UNKNOWN);
+    }
+    
     // Schedule the next update
     setTimeout(this.update.bind(this), 500);
+}
+
+WebApp._getTrackLength = function()
+{
+    var elm = document.querySelector(".player .player-progress .progress-length");
+    return Nuvola.parseTimeUsec(elm ? elm.innerText || null : null);
 }
 
 WebApp._isButtonEnabled = function(name)
@@ -143,6 +159,12 @@ WebApp._onActionActivated = function(emitter, name, param)
         break;
     case PlayerAction.NEXT_SONG:
         this._clickButton("next");
+        break;
+    case PlayerAction.SEEK:
+        var bar = document.querySelector(".player .player-progress .progress-buffer");
+        var total = this._getTrackLength();
+        if (bar && total >= param)
+            Nuvola.clickOnElement(bar, param / total, 0.5);
         break;
     }
 }
