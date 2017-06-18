@@ -1,8 +1,8 @@
 Changelog
 =========
 
-2.6 - unreleased
-----------------
+2.6 - June 18th, 2017
+---------------------
 
   * Metadata was updated according to the latest Nuvola SDK requirements.
   * Progress bar is fully integrated - it is possible to show track position and change it as well.
