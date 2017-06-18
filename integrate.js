@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 Jiří Janoušek <janousek.jiri@gmail.com>
+ * Copyright 2014-2017 Jiří Janoušek <janousek.jiri@gmail.com>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: 
@@ -22,15 +22,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * TODO: Love song action.
- */
- 
 "use strict";
 
 (function(Nuvola)
 {
 
+// Translations
+var C_ = Nuvola.Translate.pgettext;
+var ngettext = Nuvola.Translate.ngettext;
+
+var ACTION_LOVE_TRACK = "love-track";
 
 // Create media player component
 var player = Nuvola.$object(Nuvola.MediaPlayer);
@@ -41,6 +42,13 @@ var PlayerAction = Nuvola.PlayerAction;
 
 // Create new WebApp prototype
 var WebApp = Nuvola.$WebApp();
+
+WebApp._onInitAppRunner = function(emitter)
+{
+    Nuvola.WebApp._onInitAppRunner.call(this, emitter);
+    Nuvola.actions.addAction("playback", "win", ACTION_LOVE_TRACK, C_("Action", "Favorite track"),
+        null, null, null, true);
+}
 
 // Initialization routines
 WebApp._onInitWebWorker = function(emitter)
@@ -65,6 +73,8 @@ WebApp._onPageReady = function()
     + " .page-sidebar .player-controls > .controls.controls-options .volume > .control-volume-max,"
     + " .page-sidebar .player-controls > .controls.controls-options .volume > .volume-progress {display: inline-block;}"
     );
+    
+    player.addExtraActions([ACTION_LOVE_TRACK]);
     
     // Connect handler for signal ActionActivated
     Nuvola.actions.connect("ActionActivated", this);
@@ -105,6 +115,10 @@ WebApp.update = function()
     player.setCanPause(pauseButton);
     player.setCanGoPrev(this._isButtonEnabled("prev"));
     player.setCanGoNext(this._isButtonEnabled("next"));
+    
+    var loveButton = this._getLoveButton();
+    Nuvola.actions.updateEnabledFlag(ACTION_LOVE_TRACK, state !== PlaybackState.UNKNOWN && !!loveButton.button);
+    Nuvola.actions.updateState(ACTION_LOVE_TRACK, loveButton.state);
     
     if (Nuvola.checkVersion && Nuvola.checkVersion(4, 4, 18))
     {
@@ -152,6 +166,18 @@ WebApp._getButton = function(name)
     return document.querySelector(".player button.control.control-" + name);
 }
 
+WebApp._getLoveButton = function()
+{
+    var button = document.querySelector(".player .player-actions .icon-love");
+    var state = false;
+    if (button)
+    {
+        state = button.classList.contains("active");
+        button = button.parentNode;
+    }
+    return {button: button, state: state};
+}
+
 // Handler of playback actions
 WebApp._onActionActivated = function(emitter, name, param)
 {
@@ -187,6 +213,11 @@ WebApp._onActionActivated = function(emitter, name, param)
         if (bar)
             Nuvola.clickOnElement(bar, param, 0.5);
         head.removeChild(this.changeVolumeStylesheet); 
+        break;
+    case ACTION_LOVE_TRACK:
+        var loveButton = this._getLoveButton().button;
+        if (loveButton)
+            Nuvola.clickOnElement(loveButton);
         break;
     }
 }
