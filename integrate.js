@@ -31,14 +31,6 @@
 (function(Nuvola)
 {
 
-var CHANGE_VOLUME_STYLE = Nuvola.makeElement("style", {},
-"   .page-sidebar .player-controls > .controls.controls-options .volume {margin: 0;}"
-+ " .page-sidebar .player-controls > .controls.controls-options .volume ~ li {display: none !important;}"
-+ " .page-sidebar .player-controls > .controls.controls-options .volume > .control-volume > .is-volume-default {display: none !important;}"
-+ " .page-sidebar .player-controls > .controls.controls-options .volume > .control-volume > .is-volume-min {display: inline-block;}"
-+ " .page-sidebar .player-controls > .controls.controls-options .volume > .control-volume-max,"
-+ " .page-sidebar .player-controls > .controls.controls-options .volume > .volume-progress {display: inline-block;}"
-);
 
 // Create media player component
 var player = Nuvola.$object(Nuvola.MediaPlayer);
@@ -65,6 +57,15 @@ WebApp._onInitWebWorker = function(emitter)
 // Page is ready for magic
 WebApp._onPageReady = function()
 {
+    this.changeVolumeStylesheet = Nuvola.makeElement("style", {},
+    "   .page-sidebar .player-controls > .controls.controls-options .volume {margin: 0;}"
+    + " .page-sidebar .player-controls > .controls.controls-options .volume ~ li {display: none !important;}"
+    + " .page-sidebar .player-controls > .controls.controls-options .volume > .control-volume > .is-volume-default {display: none !important;}"
+    + " .page-sidebar .player-controls > .controls.controls-options .volume > .control-volume > .is-volume-min {display: inline-block;}"
+    + " .page-sidebar .player-controls > .controls.controls-options .volume > .control-volume-max,"
+    + " .page-sidebar .player-controls > .controls.controls-options .volume > .volume-progress {display: inline-block;}"
+    );
+    
     // Connect handler for signal ActionActivated
     Nuvola.actions.connect("ActionActivated", this);
 
@@ -181,11 +182,11 @@ WebApp._onActionActivated = function(emitter, name, param)
         break;
     case PlayerAction.CHANGE_VOLUME:
         var head = document.getElementsByTagName("head")[0];
-        head.appendChild(CHANGE_VOLUME_STYLE);
+        head.appendChild(this.changeVolumeStylesheet);
         var bar = document.querySelector(".player .volume .volume-progress .volume-progress-bar");
         if (bar)
             Nuvola.clickOnElement(bar, param, 0.5);
-        head.removeChild(CHANGE_VOLUME_STYLE); 
+        head.removeChild(this.changeVolumeStylesheet); 
         break;
     }
 }
