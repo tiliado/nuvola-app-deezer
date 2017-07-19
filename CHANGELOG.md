@@ -1,6 +1,12 @@
 Changelog
 =========
 
++1
+--
+
+  * Don't use Nuvola.parseTimeUsec in Nuvola 3 as it is available since Nuvola 4.5.
+    Issue: tiliado/nuvola-app-deezer#11
+
 2.6 - June 18th, 2017
 ---------------------
 

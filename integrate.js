@@ -136,7 +136,7 @@ WebApp.update = function()
 WebApp._getTrackLength = function()
 {
     var elm = document.querySelector(".player .player-progress .progress-length");
-    return Nuvola.parseTimeUsec(elm ? elm.innerText || null : null);
+    return Nuvola.parseTimeUsec ? Nuvola.parseTimeUsec(elm ? elm.innerText || null : null) : 0;
 }
 
 WebApp._isButtonEnabled = function(name)
