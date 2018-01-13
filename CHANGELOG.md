@@ -3,6 +3,7 @@ Changelog
 
   * Switched to Chromium backend and Media Stream Extension for audio playback instead of Flash plugin.
     Issue: tiliado/nuvola-app-deezer#12
+  * Non-functional "Add to Favorite tracks" action was fixed. Issue: tiliado/nuvola-app-deezer#13
 
 2.7 - July 19th, 2017
 ---------------------

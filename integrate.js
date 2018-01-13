@@ -166,13 +166,12 @@ WebApp._getButton = function(name)
     return document.querySelector(".player button.control.control-" + name);
 }
 
-WebApp._getLoveButton = function()
-{
-    var button = document.querySelector(".player .player-actions .icon-love");
+WebApp._getLoveButton = function() {
+    var button = (document.querySelector(".player .player-actions .svg-icon-love-outline")
+      || document.querySelector(".player .player-actions .icon-love"));
     var state = false;
-    if (button)
-    {
-        state = button.classList.contains("active");
+    if (button) {
+        state = button.classList.contains("is-active") || button.classList.contains("active");
         button = button.parentNode;
     }
     return {button: button, state: state};
