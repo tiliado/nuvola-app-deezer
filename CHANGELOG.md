@@ -1,6 +1,9 @@
 Changelog
 =========
 
+3.0 - March 4th, 2018
+---------------------
+
   * Switched to Chromium backend and Media Stream Extension for audio playback instead of Flash plugin.
     Issue: tiliado/nuvola-app-deezer#12
   * Non-functional "Add to Favorite tracks" action was fixed. Issue: tiliado/nuvola-app-deezer#13
@@ -21,7 +24,7 @@ Changelog
     Issue: tiliado/nuvolaruntime#22
   * The button to add track to favourite tracks was integrated as a menu item shown in the menu of Unity launcher,
     Plank launcher and tray icon.
-    
+
 2.5 - November 26th, 2016
 -------------------------
 
