@@ -6,3 +6,8 @@ nuvola-app-deezer
 eu.tiliado.NuvolaAppDeezer.appdata.xml
 eu.tiliado.NuvolaAppDeezer.data.service
 deezer.tar.gz
+eu.tiliado.NuvolaAppDeezer.service
+eu.tiliado.WebRuntimeAppDeezer.appdata.xml
+eu.tiliado.WebRuntimeAppDeezer.desktop
+eu.tiliado.WebRuntimeAppDeezer.service
+nuvola-app-deezer.metainfo.xml
