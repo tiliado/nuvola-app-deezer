@@ -1,0 +1,23 @@
+version: 2
+jobs:
+  build:
+    machine: # for docker --privileged
+      image: circleci/classic:latest
+    working_directory: ~/workdir
+    steps:
+      - checkout
+      - run: 
+          name: Install deps & run nuvolasdk check-project
+          command: |
+            docker run \
+              --mount src=`pwd`,target=/workdir,type=bind \
+              --privileged --name fedora fedora:28 \
+              bash -c '
+                dnf -y update && dnf install -y flatpak && dnf clean all;
+                flatpak remote-add flathub https://dl.flathub.org/repo/flathub.flatpakrepo;
+                flatpak remote-add  nuvola https://dl.tiliado.eu/flatpak/nuvola.flatpakrepo;
+                flatpak install -y nuvola eu.tiliado.NuvolaAdk//stable > /dev/null;
+                echo Done installation;
+                cd /workdir;
+                flatpak run --filesystem=/workdir --command=nuvolasdk eu.tiliado.NuvolaAdk check-project
+              '
