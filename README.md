@@ -1,4 +1,4 @@
-Deezer • Nuvola Apps Runtime
+Deezer • Nuvola Apps Runtime [![CircleCI](https://circleci.com/gh/tiliado/nuvola-app-deezer/tree/master.svg?style=svg)](https://circleci.com/gh/tiliado/nuvola-app-deezer/tree/master)
 ============================
 
 Integration of Deezer into your linux desktop via
