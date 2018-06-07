@@ -27,3 +27,5 @@ jobs:
                 flatpak run -d --filesystem=/workdir --command=sh eu.tiliado.NuvolaAdk -c "./configure --genuine";
                 flatpak run -d --filesystem=/workdir --command=sh eu.tiliado.NuvolaAdk -c "make all"
               '
+      - store_artifacts:
+          path: ~/workdir/screenshots
