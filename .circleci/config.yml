@@ -24,8 +24,10 @@ jobs:
                 echo Done installation;
                 cd /workdir;
                 flatpak run --filesystem=/workdir --command=nuvolasdk eu.tiliado.NuvolaAdk check-project;
-                flatpak run -d --filesystem=/workdir --command=sh eu.tiliado.NuvolaAdk -c "./configure --genuine";
-                flatpak run -d --filesystem=/workdir --command=sh eu.tiliado.NuvolaAdk -c "make all"
+                flatpak run -d --filesystem=/workdir --command=sh eu.tiliado.NuvolaAdk -c "
+                  set -eu; ./configure; make all; make install DESTDIR=./tmp; make clean; make distclean";
+                flatpak run -d --filesystem=/workdir --command=sh eu.tiliado.NuvolaAdk -c "
+                  set -eu; ./configure --genuine; make all; make install DESTDIR=./tmp2; make clean; make all";
               '
       - store_artifacts:
           path: ~/workdir/screenshots
