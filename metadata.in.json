@@ -8,9 +8,10 @@
   "version_major": 3,
   "version_minor": 0,
   "api_major": 4,
-  "api_minor": 9,
+  "api_minor": 11,
   "requirements": "Chromium[63] Feature[MSE]",
   "categories": "AudioVideo;Audio;",
+  "dark_theme": true,
   "license": "2-Clause BSD-license",
   "build": {
     "icons": [
