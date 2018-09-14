@@ -81,44 +81,29 @@
   // Extract data from the web page
   WebApp.update = function () {
     var track = { album: null }
-    var elm
-    elm = document.querySelector('.player .player-track .player-track-title')
-    track.title = elm ? elm.innerText || null : null
-    elm = document.querySelector('.player .player-track-artist .player-track-link')
-    track.artist = elm ? elm.innerText || null : null
-    elm = document.querySelector('.player .player-cover img')
-    track.artLocation = elm ? elm.src || null : null
+    var elms = this._getElements()
+    track.title = Nuvola.queryText('.player .player-track .player-track-title')
+    track.artist = Nuvola.queryText('.player .player-track-artist .player-track-link')
+    track.artLocation = Nuvola.queryAttribute('.player .player-cover img', 'src')
     track.length = this._getTrackLength()
-    elm = document.querySelector('.player .player-progress .progress-time')
-    var elapsed = elm ? elm.innerText || null : null
-    var volumeHandler = document.querySelector('.player .volume .volume-progress .volume-handler')
-    var volume = volumeHandler ? volumeHandler.getAttribute('aria-valuenow') / 100 : 1.0
+    var elapsed = Nuvola.queryText('.player .player-progress .progress-time')
+    var volume = elms.volumeHandler ? elms.volumeHandler.getAttribute('aria-valuenow') / 100 : 1.0
+    player.setTrack(track)
 
-    /*
-     * No idea where #document comes from.
-     * https://github.com/tiliado/nuvola-app-deezer/issues/2
-     */
-    if (track.title !== '#document' && track.artist !== '#document') {
-      player.setTrack(track)
-    }
-
-    var playButton = this._isButtonEnabled('play')
-    var pauseButton = !playButton && this._isButtonEnabled('pause')
-    var state = playButton ? PlaybackState.PAUSED : (pauseButton ? PlaybackState.PLAYING : PlaybackState.UNKNOWN)
+    var state = elms.play ? PlaybackState.PAUSED : (elms.pause ? PlaybackState.PLAYING : PlaybackState.UNKNOWN)
     player.setPlaybackState(state)
-    player.setCanPlay(playButton)
-    player.setCanPause(pauseButton)
-    player.setCanGoPrev(this._isButtonEnabled('prev'))
-    player.setCanGoNext(this._isButtonEnabled('next'))
+    player.setCanPlay(!!elms.play)
+    player.setCanPause(!!elms.pause)
+    player.setCanGoPrev(!!elms.prev)
+    player.setCanGoNext(!!elms.next)
 
-    var loveButton = this._getLoveButton()
-    Nuvola.actions.updateEnabledFlag(ACTION_LOVE_TRACK, state !== PlaybackState.UNKNOWN && !!loveButton.button)
-    Nuvola.actions.updateState(ACTION_LOVE_TRACK, loveButton.state)
+    Nuvola.actions.updateEnabledFlag(ACTION_LOVE_TRACK, state !== PlaybackState.UNKNOWN && !!elms.love.button)
+    Nuvola.actions.updateState(ACTION_LOVE_TRACK, elms.love.state)
 
     if (Nuvola.checkVersion && Nuvola.checkVersion(4, 4, 18)) {
       if (state !== PlaybackState.UNKNOWN) { player.setTrackPosition(elapsed) }
       player.setCanSeek(state !== PlaybackState.UNKNOWN)
-      player.setCanChangeVolume(!!volumeHandler)
+      player.setCanChangeVolume(!!elms.volumeHandler)
       player.updateVolume(volume)
     }
 
@@ -129,28 +114,6 @@
   WebApp._getTrackLength = function () {
     var elm = document.querySelector('.player .player-progress .progress-length')
     return Nuvola.parseTimeUsec ? Nuvola.parseTimeUsec(elm ? elm.innerText || null : null) : 0
-  }
-
-  WebApp._isButtonEnabled = function (name) {
-    var button = this._getButton(name)
-    return button && !button.disabled
-  }
-
-  WebApp._clickButton = function (name) {
-    var button = this._getButton(name)
-    if (button && !button.disabled) {
-      Nuvola.clickOnElement(button)
-      return true
-    }
-    return false
-  }
-
-  WebApp._getButton = function (name) {
-    if (name === 'play' || name === 'pause') {
-      var button = document.querySelector('.player button.control.control-play')
-      return (button && button.querySelector('svg.svg-icon-' + name)) ? button : null
-    }
-    return document.querySelector('.player button.control.control-' + name)
   }
 
   WebApp._getLoveButton = function () {
@@ -166,24 +129,23 @@
 
   // Handler of playback actions
   WebApp._onActionActivated = function (emitter, name, param) {
+    var elms = this._getElements()
     switch (name) {
       case PlayerAction.TOGGLE_PLAY:
-        if (!this._clickButton('play')) {
-          this._clickButton('pause')
-        }
+        Nuvola.clickOnElement(elms.pause || elms.play)
         break
       case PlayerAction.PLAY:
-        this._clickButton('play')
+        Nuvola.clickOnElement(elms.play)
         break
       case PlayerAction.PAUSE:
       case PlayerAction.STOP:
-        this._clickButton('pause')
+        Nuvola.clickOnElement(elms.pause)
         break
       case PlayerAction.PREV_SONG:
-        this._clickButton('prev')
+        Nuvola.clickOnElement(elms.prev)
         break
       case PlayerAction.NEXT_SONG:
-        this._clickButton('next')
+        Nuvola.clickOnElement(elms.next)
         break
       case PlayerAction.SEEK:
         var seekBar = document.querySelector('.player .player-progress .progress-buffer')
@@ -202,12 +164,32 @@
         head.removeChild(this.changeVolumeStylesheet)
         break
       case ACTION_LOVE_TRACK:
-        var loveButton = this._getLoveButton().button
-        if (loveButton) {
-          Nuvola.clickOnElement(loveButton)
-        }
+        Nuvola.clickOnElement(elms.love.button)
         break
     }
+  }
+
+  WebApp._getElements = function () {
+    var elms = {
+      volumeHandler: document.querySelector('.player .volume .volume-progress .volume-handler'),
+      prev: document.querySelector('.player button.control.control-prev'),
+      next: document.querySelector('.player button.control.control-next'),
+      play: document.querySelector('.player button.control.control-play'),
+      pause: null,
+      love: this._getLoveButton()
+    }
+     // Ignore disabled buttons
+    for (var key in elms) {
+      if (elms[key] && elms[key].disabled) {
+        elms[key] = null
+      }
+    }
+
+    if (elms.play && elms.play.querySelector('svg.svg-icon-pause')) {
+      elms.pause = elms.play
+      elms.play = null
+    }
+    return elms
   }
 
   WebApp.start()
