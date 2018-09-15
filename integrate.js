@@ -113,6 +113,10 @@
     player.setCanChangeVolume(!!elms.volumeHandler)
     player.updateVolume(volume)
 
+    var repeat = this._getRepeatStatus(elms.repeat)
+    Nuvola.actions.updateEnabledFlag(PlayerAction.REPEAT, repeat !== null)
+    Nuvola.actions.updateState(PlayerAction.REPEAT, repeat || 0)
+
     // Schedule the next update
     setTimeout(this.update.bind(this), 500)
   }
@@ -133,6 +137,27 @@
       button = button.parentNode
     }
     return {button: button, state: state}
+  }
+
+  WebApp._getRepeatStatus = function (button) {
+    if (!button || !button.firstChild) {
+      return null
+    }
+    var classes = button.firstChild.classList
+    if (!classes.contains('is-active') && !classes.contains('active')) {
+      return Nuvola.PlayerRepeat.NONE
+    }
+    return classes.contains('svg-icon-repeat-one') ? Nuvola.PlayerRepeat.TRACK : Nuvola.PlayerRepeat.PLAYLIST
+  }
+
+  WebApp._setRepeatStatus = function (button, repeat) {
+    if (!button) {
+      console.log('Do not have repeat button!')
+      return
+    }
+    while (this._getRepeatStatus(button) !== repeat) {
+      Nuvola.clickOnElement(button)
+    }
   }
 
   // Handler of playback actions
@@ -179,6 +204,9 @@
         }
         head.removeChild(this.changeVolumeStylesheet)
         break
+      case PlayerAction.REPEAT:
+        this._setRepeatStatus(elms.repeat, param)
+        break
       case ACTION_LOVE_TRACK:
         Nuvola.clickOnElement(elms.love.button)
         break
@@ -187,13 +215,15 @@
 
   WebApp._getElements = function () {
     var playbackButtons = document.querySelectorAll('.player-bottom .player-controls button')  // new Deezer 2018
+    var playerOptions = document.querySelectorAll('.player-bottom .player-options button') // new Deezer 2018
     var elms = {
       volumeHandler: document.querySelector('.player .volume .volume-progress .volume-handler'),
       prev: document.querySelector('.player button.control.control-prev') || playbackButtons[0],
       next: document.querySelector('.player button.control.control-next') || playbackButtons[2],
       play: document.querySelector('.player button.control.control-play') || playbackButtons[1],
       pause: null,
-      love: this._getLoveButton()
+      love: this._getLoveButton(),
+      repeat: document.querySelector('.player button.control.control-repeat') || playerOptions[0]
     }
 
     // Ignore disabled buttons
