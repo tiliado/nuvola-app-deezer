@@ -106,12 +106,12 @@
     Nuvola.actions.updateEnabledFlag(ACTION_LOVE_TRACK, state !== PlaybackState.UNKNOWN && !!elms.love.button)
     Nuvola.actions.updateState(ACTION_LOVE_TRACK, elms.love.state)
 
-    if (Nuvola.checkVersion && Nuvola.checkVersion(4, 4, 18)) {
-      if (state !== PlaybackState.UNKNOWN) { player.setTrackPosition(elapsed) }
-      player.setCanSeek(state !== PlaybackState.UNKNOWN)
-      player.setCanChangeVolume(!!elms.volumeHandler)
-      player.updateVolume(volume)
+    if (state !== PlaybackState.UNKNOWN) {
+      player.setTrackPosition(elapsed)
     }
+    player.setCanSeek(state !== PlaybackState.UNKNOWN)
+    player.setCanChangeVolume(!!elms.volumeHandler)
+    player.updateVolume(volume)
 
     // Schedule the next update
     setTimeout(this.update.bind(this), 500)

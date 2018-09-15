@@ -8,7 +8,7 @@
   "version_major": 3,
   "version_minor": 0,
   "api_major": 4,
-  "api_minor": 9,
+  "api_minor": 13,
   "requirements": "Chromium[63] Feature[MSE]",
   "categories": "AudioVideo;Audio;",
   "license": "2-Clause BSD-license",
