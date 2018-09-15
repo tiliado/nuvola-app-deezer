@@ -117,6 +117,14 @@
     Nuvola.actions.updateEnabledFlag(PlayerAction.REPEAT, repeat !== null)
     Nuvola.actions.updateState(PlayerAction.REPEAT, repeat || 0)
 
+    var shuffle = null
+    if (elms.shuffle && elms.shuffle.firstChild) {
+      var classes = elms.shuffle.firstChild.classList
+      shuffle = classes.contains('is-active') || classes.contains('active')
+    }
+    Nuvola.actions.updateEnabledFlag(PlayerAction.SHUFFLE, shuffle !== null)
+    Nuvola.actions.updateState(PlayerAction.SHUFFLE, !!shuffle)
+
     // Schedule the next update
     setTimeout(this.update.bind(this), 500)
   }
@@ -207,6 +215,9 @@
       case PlayerAction.REPEAT:
         this._setRepeatStatus(elms.repeat, param)
         break
+      case PlayerAction.SHUFFLE:
+        Nuvola.clickOnElement(elms.shuffle)
+        break
       case ACTION_LOVE_TRACK:
         Nuvola.clickOnElement(elms.love.button)
         break
@@ -223,7 +234,8 @@
       play: document.querySelector('.player button.control.control-play') || playbackButtons[1],
       pause: null,
       love: this._getLoveButton(),
-      repeat: document.querySelector('.player button.control.control-repeat') || playerOptions[0]
+      repeat: document.querySelector('.player button.control.control-repeat') || playerOptions[0],
+      shuffle: document.querySelector('.player button.control.control-shuffle') || playerOptions[1]
     }
 
     // Ignore disabled buttons
