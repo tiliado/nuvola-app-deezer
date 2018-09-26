@@ -10,4 +10,4 @@ jobs:
           name: Install deps & check project
           command: sh .circleci/circleci.sh
       - store_artifacts:
-          path: ~/workdir/screenshots
+          path: ~/workdir/keep

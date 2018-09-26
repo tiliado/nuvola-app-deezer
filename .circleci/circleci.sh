@@ -14,6 +14,8 @@ docker run \
     flatpak install -y nuvola eu.tiliado.NuvolaAdk//master > /dev/null
     echo Done installation
     cd /workdir
+    mkdir -p keep/stable keep/master
+    
     run() {
       branch=$1
       shift
@@ -21,11 +23,16 @@ docker run \
       shift
       flatpak run --filesystem=/workdir --command=$cmd eu.tiliado.NuvolaAdk//$branch "$@"
     }
+    
     run stable nuvolasdk check-project
     run stable sh -c "./configure --genuine"
     run stable make all
+    cp -rv screenshots keep/stable
     run stable make distclean
+    
     run master nuvolasdk check-project
     run master sh -c "./configure --genuine"
     run master make all
+    cp -rv screenshots keep/master
+    run master make distclean
 '
