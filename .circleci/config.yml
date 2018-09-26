@@ -7,25 +7,7 @@ jobs:
     steps:
       - checkout
       - run: 
-          name: Install deps & run nuvolasdk check-project
-          command: |
-            docker run \
-              --mount src=`pwd`,target=/workdir,type=bind \
-              --privileged --name fedora fedora:28 \
-              bash -c '
-                set -eu;
-                export LANG=en_US.UTF-8
-                export LC_ALL=en_US.UTF-8
-                dnf -y update && dnf install -y flatpak && dnf clean all;
-                flatpak remote-add flathub https://dl.flathub.org/repo/flathub.flatpakrepo;
-                flatpak remote-add  nuvola https://dl.tiliado.eu/flatpak/nuvola.flatpakrepo;
-                flatpak install -y flathub org.gnome.Sdk//3.28 > /dev/null;
-                flatpak install -y nuvola eu.tiliado.NuvolaAdk//stable > /dev/null;
-                echo Done installation;
-                cd /workdir;
-                flatpak run --filesystem=/workdir --command=nuvolasdk eu.tiliado.NuvolaAdk check-project;
-                flatpak run -d --filesystem=/workdir --command=sh eu.tiliado.NuvolaAdk -c "./configure --genuine";
-                flatpak run -d --filesystem=/workdir --command=sh eu.tiliado.NuvolaAdk -c "make all"
-              '
+          name: Install deps & check project
+          command: sh .circleci/circleci.sh
       - store_artifacts:
           path: ~/workdir/screenshots
