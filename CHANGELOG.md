@@ -1,5 +1,8 @@
-Changelog
-=========
+Deezer Changelog
+================
+
+3.1  - October 14th, 2018
+-------------------------
 
   * Nuvola 4.13 is required.
   * The script was adjusted to the new Deezer design 09/2018.
