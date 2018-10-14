@@ -1,9 +1,9 @@
 Changelog
 =========
 
+  * Nuvola 4.13 is required.
   * The script was adjusted to the new Deezer design 09/2018.
     Issue: tiliado/nuvola-app-deezer#15, tiliado/nuvolaruntime#468
-  * Nuvola 4.13 is required.
   * The shuffle status was integrated. Issue: tiliado/nuvolaruntime#20
   * The repeat status was integrated. Issue: tiliado/nuvolaruntime#21
 
