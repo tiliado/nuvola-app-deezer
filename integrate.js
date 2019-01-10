@@ -61,7 +61,7 @@
   // Page is ready for magic
   WebApp._onPageReady = function () {
     this.changeVolumeStylesheet = Nuvola.makeElement('style', {},
-    '   .page-sidebar .player-controls > .controls.controls-options .volume {margin: 0;}' +
+      '   .page-sidebar .player-controls > .controls.controls-options .volume {margin: 0;}' +
     ' .page-sidebar .player-controls > .controls.controls-options .volume ~ li {display: none !important;}' +
     ' .page-sidebar .player-controls > .controls.controls-options .volume > .control-volume > .is-volume-default {display: none !important;}' +
     ' .page-sidebar .player-controls > .controls.controls-options .volume > .control-volume > .is-volume-min {display: inline-block;}' +
@@ -136,7 +136,7 @@
   }
 
   WebApp._getLoveButton = function () {
-    var buttons = document.querySelectorAll('.player-bottom .track-actions button')  // new Deezer 2018
+    var buttons = document.querySelectorAll('.player-bottom .track-actions button') // new Deezer 2018
     var button = (document.querySelector('.player .player-actions .svg-icon-love-outline') ||
       document.querySelector('.player .player-actions .icon-love') || (buttons[2] ? buttons[2].firstChild : null))
     var state = false
@@ -144,7 +144,7 @@
       state = button.classList.contains('is-active') || button.classList.contains('active')
       button = button.parentNode
     }
-    return {button: button, state: state}
+    return { button: button, state: state }
   }
 
   WebApp._getRepeatStatus = function (button) {
@@ -225,7 +225,7 @@
   }
 
   WebApp._getElements = function () {
-    var playbackButtons = document.querySelectorAll('.player-bottom .player-controls button')  // new Deezer 2018
+    var playbackButtons = document.querySelectorAll('.player-bottom .player-controls button') // new Deezer 2018
     var playerOptions = document.querySelectorAll('.player-bottom .player-options button') // new Deezer 2018
     var elms = {
       volumeHandler: document.querySelector('.player .volume .volume-progress .volume-handler'),
@@ -253,4 +253,4 @@
   }
 
   WebApp.start()
-})(this)  // function(Nuvola)
+})(this) // function(Nuvola)
