@@ -227,15 +227,21 @@
   WebApp._getElements = function () {
     var playbackButtons = document.querySelectorAll('.player-bottom .player-controls button') // new Deezer 2018
     var playerOptions = document.querySelectorAll('.player-bottom .player-options button') // new Deezer 2018
+    var findButton = (buttons, name) => {
+      for (var button of buttons) {
+        if (button.firstElementChild.classList.contains('svg-icon-' + name)) return button
+      }
+      return null
+    }
     var elms = {
       volumeHandler: document.querySelector('.player .volume .volume-progress .volume-handler'),
-      prev: document.querySelector('.player button.control.control-prev') || playbackButtons[0],
-      next: document.querySelector('.player button.control.control-next') || playbackButtons[2],
-      play: document.querySelector('.player button.control.control-play') || playbackButtons[1],
-      pause: null,
+      prev: document.querySelector('.player button.control.control-prev') || findButton(playbackButtons, 'prev'),
+      next: document.querySelector('.player button.control.control-next') || findButton(playbackButtons, 'next'),
+      play: document.querySelector('.player button.control.control-play') || findButton(playbackButtons, 'play'),
+      pause: findButton(playbackButtons, 'pause'),
       love: this._getLoveButton(),
-      repeat: document.querySelector('.player button.control.control-repeat') || playerOptions[0],
-      shuffle: document.querySelector('.player button.control.control-shuffle') || playerOptions[1]
+      repeat: document.querySelector('.player button.control.control-repeat') || findButton(playerOptions, 'repeat'),
+      shuffle: document.querySelector('.player button.control.control-shuffle') || findButton(playerOptions, 'shuffle')
     }
 
     // Ignore disabled buttons

@@ -1,6 +1,8 @@
 Deezer Changelog
 ================
 
+  * The play/pause action for Podcasts was fixed. Issue: tiliado/nuvolaruntime#495
+
 3.1  - October 14th, 2018
 -------------------------
 
