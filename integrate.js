@@ -82,10 +82,9 @@
   WebApp.update = function () {
     var track = { album: null }
     var elms = this._getElements()
-    // The second selector is new Deezer 2018
-    track.title = (Nuvola.queryText('.player .player-track .player-track-title') ||
+    track.title = (Nuvola.queryText('.player-full .queuelist-cover-title') ||
       Nuvola.queryText('.player-bottom .track-title a.track-link:first-child'))
-    track.artist = (Nuvola.queryText('.player .player-track-artist .player-track-link') ||
+    track.artist = (Nuvola.queryText('.player-full .queuelist-cover-subtitle') ||
       Nuvola.queryText('.player-bottom .track-title a.track-link:last-child'))
     track.artLocation = (Nuvola.queryAttribute('.player .player-cover img', 'src') ||
       Nuvola.queryAttribute(
