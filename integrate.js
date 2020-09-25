@@ -149,7 +149,7 @@
       return null
     }
     var classes = button.firstChild.classList
-    if (!classes.contains('is-active') && !classes.contains('active')) {
+    if (!classes.contains('is-active')) {
       return Nuvola.PlayerRepeat.NONE
     }
     return classes.contains('svg-icon-repeat-one') ? Nuvola.PlayerRepeat.TRACK : Nuvola.PlayerRepeat.PLAYLIST
@@ -237,7 +237,7 @@
       play: document.querySelector('.player button.control.control-play') || findButton(playbackButtons, 'play'),
       pause: findButton(playbackButtons, 'pause'),
       love: this._getLoveButton(),
-      repeat: document.querySelector('.player button.control.control-repeat') || findButton(playerOptions, 'repeat'),
+      repeat: findButton(playerOptions, 'repeat') || findButton(playerOptions, 'repeat-one'),
       shuffle: document.querySelector('.player button.control.control-shuffle') || findButton(playerOptions, 'shuffle')
     }
 
