@@ -2,6 +2,7 @@ Deezer Changelog
 ================
 
   * Fix track title and artist in queue view. Issue: tiliado/nuvolaruntime#609
+  * Disable broken volume management.
 
 3.2 - February 24th, 2019
 -------------------------

@@ -92,7 +92,7 @@
     track.length = this._getTrackLength()
     var elapsed = (Nuvola.queryText('.player .player-progress .progress-time') ||
       Nuvola.queryText('.track-seekbar .slider-counter-current'))
-    var volume = elms.volumeHandler ? elms.volumeHandler.getAttribute('aria-valuenow') / 100 : 1.0
+
     player.setTrack(track)
 
     var state = elms.play ? PlaybackState.PAUSED : (elms.pause ? PlaybackState.PLAYING : PlaybackState.UNKNOWN)
@@ -109,8 +109,6 @@
       player.setTrackPosition(elapsed)
     }
     player.setCanSeek(state !== PlaybackState.UNKNOWN)
-    player.setCanChangeVolume(!!elms.volumeHandler)
-    player.updateVolume(volume)
 
     var repeat = this._getRepeatStatus(elms.repeat)
     Nuvola.actions.updateEnabledFlag(PlayerAction.REPEAT, repeat !== null)
@@ -202,7 +200,7 @@
         }
         break
       case PlayerAction.CHANGE_VOLUME:
-        // TODO: Integratevolume management
+        // TODO: Integrate volume management
         var head = document.getElementsByTagName('head')[0]
         head.appendChild(this.changeVolumeStylesheet)
         var volumeBar = document.querySelector('.player .volume .volume-progress .volume-progress-bar')
