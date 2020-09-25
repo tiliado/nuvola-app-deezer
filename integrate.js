@@ -133,13 +133,15 @@
   }
 
   WebApp._getLoveButton = function () {
-    var buttons = document.querySelectorAll('.player-bottom .track-actions button') // new Deezer 2018
-    var button = (document.querySelector('.player .player-actions .svg-icon-love-outline') ||
-      document.querySelector('.player .player-actions .icon-love') || (buttons[2] ? buttons[2].firstChild : null))
+    var buttons = document.querySelectorAll('.player-bottom .track-actions button')
+    var fullPlayerButtons = document.querySelectorAll('.player-full .queuelist-cover-actions button')
+    var button = (
+      (fullPlayerButtons.length >= 3 ? fullPlayerButtons[2] : null) ||
+        (buttons.length >= 3 ? buttons[2] : null)
+    )
     var state = false
     if (button) {
-      state = button.classList.contains('is-active') || button.classList.contains('active')
-      button = button.parentNode
+      state = button.firstChild.classList.contains('is-active')
     }
     return { button: button, state: state }
   }
