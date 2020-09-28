@@ -1,6 +1,9 @@
 Deezer Changelog
 ================
 
+3.3 - September 28, 2020
+------------------------
+
   * Fix track title and artist in queue view. Issue: tiliado/nuvolaruntime#609
   * Disable broken volume management.
   * Fix repeat button.
