@@ -26,19 +26,19 @@
 
 (function (Nuvola) {
   // Translations
-  var C_ = Nuvola.Translate.pgettext
+  const C_ = Nuvola.Translate.pgettext
 
-  var ACTION_LOVE_TRACK = 'love-track'
+  const ACTION_LOVE_TRACK = 'love-track'
 
   // Create media player component
-  var player = Nuvola.$object(Nuvola.MediaPlayer)
+  const player = Nuvola.$object(Nuvola.MediaPlayer)
 
   // Handy aliases
-  var PlaybackState = Nuvola.PlaybackState
-  var PlayerAction = Nuvola.PlayerAction
+  const PlaybackState = Nuvola.PlaybackState
+  const PlayerAction = Nuvola.PlayerAction
 
   // Create new WebApp prototype
-  var WebApp = Nuvola.$WebApp()
+  const WebApp = Nuvola.$WebApp()
 
   WebApp._onInitAppRunner = function (emitter) {
     Nuvola.WebApp._onInitAppRunner.call(this, emitter)
@@ -50,7 +50,7 @@
   WebApp._onInitWebWorker = function (emitter) {
     Nuvola.WebApp._onInitWebWorker.call(this, emitter)
 
-    var state = document.readyState
+    const state = document.readyState
     if (state === 'interactive' || state === 'complete') {
       this._onPageReady()
     } else {
@@ -80,8 +80,8 @@
 
   // Extract data from the web page
   WebApp.update = function () {
-    var track = { album: null }
-    var elms = this._getElements()
+    const track = { album: null }
+    const elms = this._getElements()
     track.title = (Nuvola.queryText('.player-full .queuelist-cover-title') ||
       Nuvola.queryText('.player-bottom .track-title a.track-link:first-child'))
     track.artist = (Nuvola.queryText('.player-full .queuelist-cover-subtitle') ||
@@ -90,12 +90,12 @@
       Nuvola.queryAttribute(
         '.player-bottom button.queuelist img', 'src', (src) => src.replace('/28x28-', '/380x380-')))
     track.length = this._getTrackLength()
-    var elapsed = (Nuvola.queryText('.player .player-progress .progress-time') ||
+    const elapsed = (Nuvola.queryText('.player .player-progress .progress-time') ||
       Nuvola.queryText('.track-seekbar .slider-counter-current'))
 
     player.setTrack(track)
 
-    var state = elms.play ? PlaybackState.PAUSED : (elms.pause ? PlaybackState.PLAYING : PlaybackState.UNKNOWN)
+    const state = elms.play ? PlaybackState.PAUSED : (elms.pause ? PlaybackState.PLAYING : PlaybackState.UNKNOWN)
     player.setPlaybackState(state)
     player.setCanPlay(!!elms.play)
     player.setCanPause(!!elms.pause)
@@ -110,13 +110,13 @@
     }
     player.setCanSeek(state !== PlaybackState.UNKNOWN)
 
-    var repeat = this._getRepeatStatus(elms.repeat)
+    const repeat = this._getRepeatStatus(elms.repeat)
     Nuvola.actions.updateEnabledFlag(PlayerAction.REPEAT, repeat !== null)
     Nuvola.actions.updateState(PlayerAction.REPEAT, repeat || 0)
 
-    var shuffle = null
+    let shuffle = null
     if (elms.shuffle && elms.shuffle.firstChild) {
-      var classes = elms.shuffle.firstChild.classList
+      const classes = elms.shuffle.firstChild.classList
       shuffle = classes.contains('is-active') || classes.contains('active')
     }
     Nuvola.actions.updateEnabledFlag(PlayerAction.SHUFFLE, shuffle !== null)
@@ -133,13 +133,13 @@
   }
 
   WebApp._getLoveButton = function () {
-    var buttons = document.querySelectorAll('.player-bottom .track-actions button')
-    var fullPlayerButtons = document.querySelectorAll('.player-full .queuelist-cover-actions button')
-    var button = (
+    const buttons = document.querySelectorAll('.player-bottom .track-actions button')
+    const fullPlayerButtons = document.querySelectorAll('.player-full .queuelist-cover-actions button')
+    const button = (
       (fullPlayerButtons.length >= 3 ? fullPlayerButtons[2] : null) ||
         (buttons.length >= 3 ? buttons[2] : null)
     )
-    var state = false
+    let state = false
     if (button) {
       state = button.firstChild.classList.contains('is-active')
     }
@@ -150,7 +150,7 @@
     if (!button || !button.firstChild) {
       return null
     }
-    var classes = button.firstChild.classList
+    const classes = button.firstChild.classList
     if (!classes.contains('is-active')) {
       return Nuvola.PlayerRepeat.NONE
     }
@@ -169,7 +169,7 @@
 
   // Handler of playback actions
   WebApp._onActionActivated = function (emitter, name, param) {
-    var elms = this._getElements()
+    const elms = this._getElements()
     switch (name) {
       case PlayerAction.TOGGLE_PLAY:
         Nuvola.clickOnElement(elms.pause || elms.play)
@@ -187,11 +187,11 @@
       case PlayerAction.NEXT_SONG:
         Nuvola.clickOnElement(elms.next)
         break
-      case PlayerAction.SEEK:
+      case PlayerAction.SEEK: {
         // The second selector is new Deezer 2018
-        var seekBar = (document.querySelector('.player .player-progress .progress-buffer') ||
+        const seekBar = (document.querySelector('.player .player-progress .progress-buffer') ||
           document.querySelector('.track-seekbar input.slider-track-input'))
-        var total = this._getTrackLength()
+        const total = this._getTrackLength()
         if (seekBar && total >= param) {
           if (seekBar.nodeName === 'INPUT') {
             Nuvola.setInputValueWithEvent(seekBar, param / total * seekBar.max)
@@ -201,16 +201,20 @@
           }
         }
         break
-      case PlayerAction.CHANGE_VOLUME:
+      }
+
+      case PlayerAction.CHANGE_VOLUME: {
         // TODO: Integrate volume management
-        var head = document.getElementsByTagName('head')[0]
+        const head = document.getElementsByTagName('head')[0]
         head.appendChild(this.changeVolumeStylesheet)
-        var volumeBar = document.querySelector('.player .volume .volume-progress .volume-progress-bar')
+        const volumeBar = document.querySelector('.player .volume .volume-progress .volume-progress-bar')
         if (volumeBar) {
           Nuvola.clickOnElement(volumeBar, param, 0.5)
         }
         head.removeChild(this.changeVolumeStylesheet)
         break
+      }
+
       case PlayerAction.REPEAT:
         this._setRepeatStatus(elms.repeat, param)
         break
@@ -224,15 +228,15 @@
   }
 
   WebApp._getElements = function () {
-    var playbackButtons = document.querySelectorAll('.player-bottom .player-controls button') // new Deezer 2018
-    var playerOptions = document.querySelectorAll('.player-bottom .player-options button') // new Deezer 2018
-    var findButton = (buttons, name) => {
-      for (var button of buttons) {
+    const playbackButtons = document.querySelectorAll('.player-bottom .player-controls button') // new Deezer 2018
+    const playerOptions = document.querySelectorAll('.player-bottom .player-options button') // new Deezer 2018
+    const findButton = (buttons, name) => {
+      for (const button of buttons) {
         if (button.firstElementChild.classList.contains('svg-icon-' + name)) return button
       }
       return null
     }
-    var elms = {
+    const elms = {
       volumeHandler: document.querySelector('.player .volume .volume-progress .volume-handler'),
       prev: document.querySelector('.player button.control.control-prev') || findButton(playbackButtons, 'prev'),
       next: document.querySelector('.player button.control.control-next') || findButton(playbackButtons, 'next'),
@@ -244,7 +248,7 @@
     }
 
     // Ignore disabled buttons
-    for (var key in elms) {
+    for (const key in elms) {
       if (elms[key] && elms[key].disabled) {
         elms[key] = null
       }
