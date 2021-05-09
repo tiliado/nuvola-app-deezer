@@ -1,6 +1,9 @@
 Deezer Changelog
 ================
 
+3.5 - May 9th, 2021
+-------------------
+
   * Fix Google sign-in: Issue: tiliado/nuvolaplayer#726
 
 3.4 - April 11th, 2021
