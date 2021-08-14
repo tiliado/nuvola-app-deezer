@@ -74,6 +74,9 @@
     // Connect handler for signal ActionActivated
     Nuvola.actions.connect('ActionActivated', this)
 
+    // Fixes Uncaught `TypeError: Cannot read property 'formats' of null` on prev/next button click
+    window.sas_manager = { formats: {} }
+
     // Start update routine
     this.update()
   }
@@ -150,11 +153,18 @@
     if (!button || !button.firstChild) {
       return null
     }
-    const classes = button.firstChild.classList
-    if (!classes.contains('is-active')) {
-      return Nuvola.PlayerRepeat.NONE
+
+    const path = button.firstElementChild.firstElementChild.firstElementChild.getAttribute('d')
+    if (path.startsWith('M9 ')) {
+      if (button.firstElementChild.classList.contains('kGoxVz')) {
+        return Nuvola.PlayerRepeat.NONE
+      }
+      return Nuvola.PlayerRepeat.PLAYLIST
     }
-    return classes.contains('svg-icon-repeat-one') ? Nuvola.PlayerRepeat.TRACK : Nuvola.PlayerRepeat.PLAYLIST
+    if (path.startsWith('M5.2 ')) {
+      return Nuvola.PlayerRepeat.TRACK
+    }
+    return null
   }
 
   WebApp._setRepeatStatus = function (button, repeat) {
@@ -230,21 +240,15 @@
   WebApp._getElements = function () {
     const playbackButtons = document.querySelectorAll('.player-bottom .player-controls button') // new Deezer 2018
     const playerOptions = document.querySelectorAll('.player-bottom .player-options button') // new Deezer 2018
-    const findButton = (buttons, name) => {
-      for (const button of buttons) {
-        if (button.firstElementChild.classList.contains('svg-icon-' + name)) return button
-      }
-      return null
-    }
     const elms = {
       volumeHandler: document.querySelector('.player .volume .volume-progress .volume-handler'),
-      prev: document.querySelector('.player button.control.control-prev') || findButton(playbackButtons, 'prev'),
-      next: document.querySelector('.player button.control.control-next') || findButton(playbackButtons, 'next'),
-      play: document.querySelector('.player button.control.control-play') || findButton(playbackButtons, 'play'),
-      pause: findButton(playbackButtons, 'pause'),
+      prev: playbackButtons[0] || null,
+      next: playbackButtons[2] || null,
+      play: playbackButtons[1] || null,
+      pause: null,
       love: this._getLoveButton(),
-      repeat: findButton(playerOptions, 'repeat') || findButton(playerOptions, 'repeat-one'),
-      shuffle: document.querySelector('.player button.control.control-shuffle') || findButton(playerOptions, 'shuffle')
+      repeat: playerOptions[0] || null,
+      shuffle: playerOptions[1] || null
     }
 
     // Ignore disabled buttons
@@ -254,7 +258,7 @@
       }
     }
 
-    if (elms.play && elms.play.querySelector('svg.svg-icon-pause')) {
+    if (elms.play && elms.play.firstElementChild.firstElementChild.firstElementChild.getAttribute('d').startsWith('M10')) {
       elms.pause = elms.play
       elms.play = null
     }
