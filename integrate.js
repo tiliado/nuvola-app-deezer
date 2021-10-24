@@ -247,8 +247,8 @@
       play: playbackButtons[1] || null,
       pause: null,
       love: this._getLoveButton(),
-      repeat: playerOptions[0] || null,
-      shuffle: playerOptions[1] || null
+      repeat: playerOptions[1] || null,
+      shuffle: playerOptions[2] || null
     }
 
     // Ignore disabled buttons

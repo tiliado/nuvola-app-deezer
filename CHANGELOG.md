@@ -2,6 +2,7 @@ Deezer Changelog
 ================
 
   * Fix integration of playback controls. Issue: tiliado/nuvolaplayer#760
+  * Fix repeat action. Issue: tiliado/nuvolaplayer#760
 
 3.5 - May 9th, 2021
 -------------------
