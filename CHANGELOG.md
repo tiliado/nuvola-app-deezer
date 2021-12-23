@@ -21,6 +21,7 @@ Deezer Changelog
   * Disable broken volume management.
   * Fix repeat button.
   * Fix love button in queue view.
+  * Fix track title for explicit tracks. Issue: tiliado/nuvolaruntime#779
 
 3.2 - February 24th, 2019
 -------------------------

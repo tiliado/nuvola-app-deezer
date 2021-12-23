@@ -85,7 +85,7 @@
   WebApp.update = function () {
     const track = { album: null }
     const elms = this._getElements()
-    track.title = (Nuvola.queryText('.player-full .queuelist-cover-title') ||
+    track.title = (Nuvola.queryText('.player-full .queuelist-cover-title .queuelist-cover-link') ||
       Nuvola.queryText('.player-bottom .track-title a.track-link:first-child'))
     track.artist = (Nuvola.queryText('.player-full .queuelist-cover-subtitle') ||
       Nuvola.queryText('.player-bottom .track-title a.track-link:last-child'))
