@@ -1,6 +1,10 @@
 Deezer Changelog
 ================
 
+3.6 - December 30th, 2021
+-------------------------
+
+  * Fix track title for explicit tracks. Issue: tiliado/nuvolaruntime#779
   * Fix integration of playback controls. Issue: tiliado/nuvolaplayer#760
   * Fix repeat action. Issue: tiliado/nuvolaplayer#760
 
