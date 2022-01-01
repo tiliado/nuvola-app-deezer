@@ -156,10 +156,13 @@
 
     const path = button.firstElementChild.firstElementChild.firstElementChild.getAttribute('d')
     if (path.startsWith('M9 ')) {
-      if (button.firstElementChild.classList.contains('kGoxVz')) {
+      if (button.firstElementChild.classList.contains('ewlift')) {
+        return Nuvola.PlayerRepeat.PLAYLIST
+      }
+      if (button.firstElementChild.classList.contains('hyAbfI')) {
         return Nuvola.PlayerRepeat.NONE
       }
-      return Nuvola.PlayerRepeat.PLAYLIST
+      return null
     }
     if (path.startsWith('M5.2 ')) {
       return Nuvola.PlayerRepeat.TRACK
